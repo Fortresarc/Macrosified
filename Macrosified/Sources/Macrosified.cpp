@@ -3,11 +3,10 @@
 #include "stdafx.h"
 #include "MouseMonitor.h"
 
-using namespace System;
-
 int main(int argc, char** argv)
 {
-	MouseMonitor mouseMonitor;
-	mouseMonitor.StartThread();
+	MouseMonitor::GetInstance().ChangeLogTo(MouseMonitor::eLogToFileAndConsole);
+	MouseMonitor::GetInstance().StartThread();
+
 	return 0;
 }
