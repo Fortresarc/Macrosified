@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "MouseMonitor.h"
+#include "Windowsx.h"
 
 using namespace System;
 
@@ -7,11 +8,17 @@ using namespace System;
 HHOOK hMouseHook;
 static long m_LastClickX;
 static long m_LastClickY;
+static BOOL m_LBDragged;
 
 int MouseMonitor::StartThread()
 {
 	HANDLE hThread;
 	DWORD dwThread;
+
+	// Init
+	m_LastClickX = 0;
+	m_LastClickY = 0;
+	m_LBDragged = FALSE;
 
 	hThread = CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)MouseMonitor::Run, 0, NULL, &dwThread);
 	if (hThread)
@@ -35,8 +42,28 @@ LRESULT CALLBACK MouseMonitor::ProcessAllMouseEvents(
 				m_LastClickX = pMouseStruct->pt.x;
 				m_LastClickY = pMouseStruct->pt.y;
 				Console::WriteLine("Clicked X = {0}  Mouse Position Y = {1}\n", m_LastClickX, m_LastClickY);
-				
-				RightClick(m_LastClickX + 50, m_LastClickY);
+
+				m_LBDragged = TRUE;
+
+				// TODO remove this test code
+				//RightClick(m_LastClickX + 50, m_LastClickY);
+			}
+			break;
+			case WM_LBUTTONUP:
+			{
+				if (m_LBDragged)
+				{
+					Console::WriteLine("Drag stopped.");
+				}
+				m_LBDragged = FALSE;
+			}
+			break;
+			case WM_MOUSEMOVE:
+			{
+				if (m_LBDragged)
+				{
+					Console::WriteLine("Dragged... {0}, {1}\n", pMouseStruct->pt.x, pMouseStruct->pt.y);
+				}
 			}
 			break;
 
