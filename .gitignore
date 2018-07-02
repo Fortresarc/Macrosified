@@ -1,0 +1,10 @@
+# Debug stuff
+Debug/*
+Macrosified/Debug/*
+
+# User settings
+.vs/*
+
+# Others
+ipch/*
+*.vcxproj.filters
